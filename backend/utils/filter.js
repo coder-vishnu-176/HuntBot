@@ -326,20 +326,67 @@ export function filterExpired(results, type, domain) {
     })
 
 
-    // Calculate score
+    // Calculate score + attach the parsed date
+    // (if any) so the frontend can show "X days
+    // left" without re-parsing the snippet itself
+
     const scoredResults = filteredResults.map((item) => {
 
-        const score = calculateScore(item, type, domain)
+        const text =
+            `${item.title} ${item.snippet} ${item.link}`.toLowerCase()
+
+        const score =
+            calculateScore(item, type, domain)
+
+        const parsedDate =
+            parseDateFromText(text)
 
         return {
             ...item,
-            score: score
+            score: score,
+            eventDate:
+                parsedDate
+                    ? parsedDate.toISOString()
+                    : null
         }
     })
 
 
-    // Highest score first
-    scoredResults.sort((a, b) => b.score - a.score)
+    // --------------------------------
+    // SORT: soonest upcoming date first,
+    // results with no detectable date go
+    // after, sorted among themselves by
+    // relevance score
+    // --------------------------------
+
+    scoredResults.sort((a, b) => {
+
+        const aHasDate = a.eventDate !== null
+        const bHasDate = b.eventDate !== null
+
+        if (aHasDate && bHasDate) {
+
+            return (
+                new Date(a.eventDate) -
+                new Date(b.eventDate)
+            )
+
+        }
+
+        if (aHasDate && !bHasDate) {
+            return -1
+        }
+
+        if (!aHasDate && bHasDate) {
+            return 1
+        }
+
+      
+
+        return b.score - a.score
+
+    })
+
 
     return scoredResults
 }
