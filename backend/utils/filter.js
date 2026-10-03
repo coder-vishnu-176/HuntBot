@@ -74,6 +74,29 @@ function parseDateFromText(text) {
     }
 
 
+    // Pattern 2b: Day Month YY (2-digit year)
+    // e.g. "28 Feb 26" meaning Feb 28, 2026
+
+    match = text.match(
+        new RegExp(
+            `\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(${monthPattern})[a-z]*\\s+(\\d{2})\\b(?!\\d)`,
+            "i"
+        )
+    )
+
+    if (match) {
+
+        const day = parseInt(match[1], 10)
+        const monthKey = match[2].slice(0, 3).toLowerCase()
+        const year = 2000 + parseInt(match[3], 10)
+
+        if (MONTHS[monthKey] !== undefined) {
+            return new Date(year, MONTHS[monthKey], day)
+        }
+
+    }
+
+
     // Pattern 3: Month Year only, no day
     // e.g. "January 2026"
     // We treat this as the LAST day of that
