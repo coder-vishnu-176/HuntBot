@@ -1,39 +1,122 @@
-function extractDate(text) {
+// ========================================
+// MONTH NAME LOOKUP
+// ========================================
 
-    // Allow optional spaces around the dash,
-    // since real snippets write dates as
-    // both "Apr 13-14, 2026" and "Apr 13 - 14, 2026"
-
-    const match = text.match(
-        /([A-Z][a-z]+)\s+\d{1,2}(?:\s?[-–]\s?\d{1,2})?,?\s+\d{4}/i
-    )
-
-    if (!match) {
-        return null
-    }
-
-    const dateText = match[0]
-
-    const rangeMatch = dateText.match(
-        /([A-Z][a-z]+)\s+\d{1,2}\s?[-–]\s?(\d{1,2}),?\s+(\d{4})/i
-    )
-
-    if (rangeMatch) {
-        const month = rangeMatch[1]
-        const endDay = rangeMatch[2]
-        const year = rangeMatch[3]
-
-        return `${month} ${endDay}, ${year}`
-    }
-
-    return dateText
+const MONTHS = {
+    jan: 0, feb: 1, mar: 2, apr: 3,
+    may: 4, jun: 5, jul: 6, aug: 7,
+    sep: 8, oct: 9, nov: 10, dec: 11
 }
 
 
-function isPastDate(dateText) {
+// ========================================
+// PARSE A REAL DATE FROM SNIPPET TEXT
+// ========================================
+// Handles three common phrasings:
+//   "Sep 28, 2026" / "Sep 28-29, 2026"  (month first)
+//   "30 September 2026"                 (day first)
+//   "January 2026"                      (month + year only)
+// Returns an actual Date object, or null
+// if nothing usable was found. Using a real
+// Date object (instead of comparing raw text)
+// avoids the bugs of relying on new Date(string)
+// with unpredictable formats.
 
-    const date = new Date(dateText)
+function parseDateFromText(text) {
+
+    const monthPattern =
+        "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec"
+
+
+    // Pattern 1: Month Day(-Day)?, Year
+    // e.g. "Sep 28, 2026" or "Sep 28-29, 2026"
+
+    let match = text.match(
+        new RegExp(
+            `\\b(${monthPattern})[a-z]*\\s+(\\d{1,2})(?:(?:st|nd|rd|th)?\\s?[-–]\\s?\\d{1,2})?,?\\s+(\\d{4})\\b`,
+            "i"
+        )
+    )
+
+    if (match) {
+
+        const monthKey = match[1].slice(0, 3).toLowerCase()
+        const day = parseInt(match[2], 10)
+        const year = parseInt(match[3], 10)
+
+        if (MONTHS[monthKey] !== undefined) {
+            return new Date(year, MONTHS[monthKey], day)
+        }
+
+    }
+
+
+    // Pattern 2: Day Month Year
+    // e.g. "30 September 2026"
+
+    match = text.match(
+        new RegExp(
+            `\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(${monthPattern})[a-z]*,?\\s+(\\d{4})\\b`,
+            "i"
+        )
+    )
+
+    if (match) {
+
+        const day = parseInt(match[1], 10)
+        const monthKey = match[2].slice(0, 3).toLowerCase()
+        const year = parseInt(match[3], 10)
+
+        if (MONTHS[monthKey] !== undefined) {
+            return new Date(year, MONTHS[monthKey], day)
+        }
+
+    }
+
+
+    // Pattern 3: Month Year only, no day
+    // e.g. "January 2026"
+    // We treat this as the LAST day of that
+    // month, so the opportunity is only
+    // considered past once the whole month
+    // has ended (gives it the benefit of
+    // the doubt, since we don't know the
+    // exact day).
+
+    match = text.match(
+        new RegExp(
+            `\\b(${monthPattern})[a-z]*,?\\s+(\\d{4})\\b`,
+            "i"
+        )
+    )
+
+    if (match) {
+
+        const monthKey = match[1].slice(0, 3).toLowerCase()
+        const year = parseInt(match[2], 10)
+
+        if (MONTHS[monthKey] !== undefined) {
+
+            // Day 0 of the next month = last
+            // day of this month
+
+            return new Date(year, MONTHS[monthKey] + 1, 0)
+
+        }
+
+    }
+
+
+    return null
+
+}
+
+
+function isPastDate(date) {
+
     const today = new Date()
+
+    today.setHours(0, 0, 0, 0)
 
     return date < today
 }
@@ -149,9 +232,9 @@ function calculateScore(item, type, domain) {
     }
 
     // Future date = 20 points
-    const dateText = extractDate(text)
+    const parsedDate = parseDateFromText(text)
 
-    if (dateText && !isPastDate(dateText)) {
+    if (parsedDate && !isPastDate(parsedDate)) {
         score += 20
     }
 
@@ -200,9 +283,9 @@ export function filterExpired(results, type, domain) {
         }
 
         // Remove past opportunities
-        const dateText = extractDate(text)
+        const parsedDate = parseDateFromText(text)
 
-        if (dateText && isPastDate(dateText)) {
+        if (parsedDate && isPastDate(parsedDate)) {
             return false
         }
 
