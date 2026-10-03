@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HuntBot - Opportunity Hunter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                H
+            </div>
+
+            <div>
+                <h1>HuntBot</h1>
+                <p>AI-powered Opportunity Hunter</p>
+            </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <!-- Saved Button -->
+            <button id="savedBtn" class="header-btn">
+
+                <span>🔖 Saved</span>
+
+                <span id="savedCount">
+                    0
+                </span>
+
+            </button>
+
+
+            <!-- Theme Toggle -->
+            <button
+                id="themeToggle"
+                class="theme-toggle"
+                aria-label="Toggle theme"
+            >
+
+                <span class="theme-track">
+
+                    <span class="theme-icon sun">
+                        ☼
+                    </span>
+
+                    <span class="theme-icon moon">
+                        ☾
+                    </span>
+
+                    <span class="theme-thumb"></span>
+
+                </span>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main>
+
+
+        <!-- ================= HERO ================= -->
+
+        <section class="hero">
+
+            <div class="hero-badge">
+
+                <span class="status-dot"></span>
+
+                LIVE OPPORTUNITY HUNTER
+
+            </div>
+
+
+            <h2>
+
+                Find opportunities.<br>
+
+                <span>
+                    Build your future.
+                </span>
+
+            </h2>
+
+
+            <p>
+                HuntBot searches the web for hackathons and internships
+                that match your interests.
+            </p>
+
+        </section>
+
+
+
+        <!-- ================= SEARCH BOX ================= -->
+
+        <section class="search-box">
+
+
+            <!-- DOMAIN -->
+
+            <div class="step">
+
+                <div class="section-label">
+
+                    <span>01</span>
+
+                    CHOOSE DOMAIN
+
+                </div>
+
+
+                <h3>
+                    What do you want to build?
+                </h3>
+
+
+                <div class="selection-group">
+
+
+                    <!-- SOFTWARE -->
+
+                    <button
+                        class="option-card"
+                        id="software"
+                    >
+
+                        <span class="option-icon software-icon">
+                            &lt;/&gt;
+                        </span>
+
+
+                        <span class="option-content">
+
+                            <strong>
+                                Software
+                            </strong>
+
+                            <small>
+                                Web · AI · Apps · Cloud
+                            </small>
+
+                        </span>
+
+
+                        <span class="select-check">
+                            ✓
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- HARDWARE -->
+
+                    <button
+                        class="option-card"
+                        id="hardware"
+                    >
+
+                        <span class="option-icon hardware-icon">
+                            ◇
+                        </span>
+
+
+                        <span class="option-content">
+
+                            <strong>
+                                Hardware
+                            </strong>
+
+                            <small>
+                                IoT · Robotics · Electronics
+                            </small>
+
+                        </span>
+
+
+                        <span class="select-check">
+                            ✓
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- OPPORTUNITY TYPE -->
+
+            <div class="step">
+
+                <div class="section-label">
+
+                    <span>02</span>
+
+                    FIND OPPORTUNITY
+
+                </div>
+
+
+                <h3>
+                    What are you looking for?
+                </h3>
+
+
+                <div class="selection-group">
+
+
+                    <!-- HACKATHON -->
+
+                    <button
+                        class="option-card"
+                        id="hackathon"
+                    >
+
+                        <span class="option-icon hackathon-icon">
+                            ⚡
+                        </span>
+
+
+                        <span class="option-content">
+
+                            <strong>
+                                Hackathons
+                            </strong>
+
+                            <small>
+                                Build · Compete · Win
+                            </small>
+
+                        </span>
+
+
+                        <span class="select-check">
+                            ✓
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- INTERNSHIP -->
+
+                    <button
+                        class="option-card"
+                        id="internship"
+                    >
+
+                        <span class="option-icon internship-icon">
+                            ↗
+                        </span>
+
+
+                        <span class="option-content">
+
+                            <strong>
+                                Internships
+                            </strong>
+
+                            <small>
+                                Learn · Work · Grow
+                            </small>
+
+                        </span>
+
+
+                        <span class="select-check">
+                            ✓
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SEARCH BUTTON -->
+
+            <button id="searchbtn">
+
+                <span class="button-text">
+                    Find Opportunities
+                </span>
+
+                <span class="button-arrow">
+                    →
+                </span>
+
+            </button>
+
+
+        </section>
+
+
+
+        <!-- ================= RESULTS ================= -->
+
+        <section id="results">
+
+            <!-- Results appear here -->
+
+        </section>
+
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
